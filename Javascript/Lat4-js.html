@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const produktoko = [
+          { id: 1, nama: "laptop", harga: 7000000, stok: 5 },
+          { id: 2, nama: "mouse", harga: 700000, stok: 10 },
+          { id: 3, nama: "keyboard", harga: 200000, stok: 15 },
+        ];
+
+        function tampilkanproduk() {
+            console.log('Daftar Produk:');
+            produktoko.forEach((produk) => {
+                console.log(
+                    `ID: ${produk.id}, Nama: ${produk.nama}, Harga: ${produk.harga}, Stok: ${produk.stok}`
+                );   
+            });
+        }   
+
+        function tambahproduk(nama, harga, stok) {
+            const idBaru = produktoko.length + 1;
+            const produkBaru = { id: idBaru, nama: nama, harga: harga, stok: stok };
+            produktoko.push(produkBaru);
+        }
+
+        function hapusProduk(id) {
+            const index = produktoko.findIndex((produk) => produk.id === id);
+            if (index !== -1) {
+                produktoko.splice(index, 1);
+                console.log(`Produk dengan ID ${id} telah dihapus.`);
+            } else {
+                console.log(`Produk dengan ID ${id} tidak ditemukan.`);
+            }
+        }
+
+        tambahproduk('usb', 150000, 8);
+        tambahproduk('earphone', 150000, 8);
+        tampilkanproduk();
+
+        console.log("\nMenghapus produk dengan ID 2...\n");
+        hapusProduk(1);
+
+        tampilkanproduk();
+    </script>
+</body>
+</html>
