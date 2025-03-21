@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Kendaraan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #daftarPelanggan {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #e9ecef;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Rental Kendaraan</h2>
+
+    <form id="rentalForm">
+        <label for="nama">Nama:</label>
+        <input type="text" id="nama" required>
+
+        <label for="nomorTelepon">Nomor Telepon:</label>
+        <input type="text" id="nomorTelepon" required>
+
+        <label for="kendaraan">Pilih Kendaraan:</label>
+        <select id="kendaraan">
+            <option value="Mobil Avanza">Mobil Avanza</option>
+            <option value="Motor Nmax">Motor Nmax</option>
+            <option value="Mobil Mclaren">Mobil Mclaren</option>
+        </select>
+
+        <button type="submit">Sewa Kendaraan</button>
+    </form>
+
+    <h3>Daftar Pelanggan yang Menyewa Kendaraan:</h3>
+    <div id="daftarPelanggan">
+        <ul id="listPelanggan"></ul>
+    </div>
+
+    <script>
+        class Pelanggan {
+            constructor(id, nama, nomorTelepon, kendaraanDisewa = null) {
+                this.id = id;
+                this.nama = nama;
+                this.nomorTelepon = nomorTelepon;
+                this.kendaraanDisewa = kendaraanDisewa;
+            }
+
+            get info() {
+                return `Pelanggan ${this.id}: ${this.nama}, Nomor: ${this.nomorTelepon}, ${this.kendaraanDisewa ? "Menyewa: " + this.kendaraanDisewa : "Belum menyewa"}`;
+            }
+
+            sewaKendaraan(kendaraan) {
+                this.kendaraanDisewa = kendaraan;
+            }
+
+            kembalikanKendaraan() {
+                this.kendaraanDisewa = null;
+            }
+        }
+
+        class SistemTransportasi {
+            constructor() {
+                this.pelangganList = [];
+            }
+
+            tambahPelanggan(pelanggan) {
+                this.pelangganList.push(pelanggan);
+                this.updateDOM();
+            }
+
+            kembalikanKendaraan(index) {
+                this.pelangganList[index].kembalikanKendaraan();
+                this.updateDOM();
+            }
+
+            updateDOM() {
+                const listPelanggan = document.getElementById('listPelanggan');
+                listPelanggan.innerHTML = '';
+
+                if (this.pelangganList.length === 0) {
+                    listPelanggan.innerHTML = '<li>Tidak ada pelanggan yang menyewa kendaraan.</li>';
+                } else {
+                    this.pelangganList.forEach((pelanggan, index) => {
+                        let listItem = document.createElement('li');
+                        listItem.textContent = pelanggan.info;
+
+                        if (pelanggan.kendaraanDisewa) {
+                            let btnKembalikan = document.createElement('button');
+                            btnKembalikan.textContent = "Kembalikan Kendaraan";
+                            btnKembalikan.style.marginLeft = "10px";
+                            btnKembalikan.onclick = () => this.kembalikanKendaraan(index);
+                            listItem.appendChild(btnKembalikan);
+                        }
+
+                        listPelanggan.appendChild(listItem);
+                    });
+                }
+            }
+        }
+
+        const sistem = new SistemTransportasi();
+        let idPelanggan = 1;
+
+        document.getElementById('rentalForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let nama = document.getElementById('nama').value;
+            let nomorTelepon = document.getElementById('nomorTelepon').value;
+            let kendaraan = document.getElementById('kendaraan').value;
+
+            if (nama && nomorTelepon && kendaraan) {
+                let pelangganBaru = new Pelanggan(idPelanggan, nama, nomorTelepon, kendaraan);
+                sistem.tambahPelanggan(pelangganBaru);
+                idPelanggan++;
+                document.getElementById('rentalForm').reset();
+            }
+        });
+
+        sistem.updateDOM();
+    </script>
+
+</body>
+</html>
